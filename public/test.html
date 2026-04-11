@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluxia Hosting Check</title>
+    <style>
+        body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; background: #0B1120; color: white; }
+        .card { padding: 2rem; border-radius: 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+        h1 { color: #F59E0B; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Hosting is Working!</h1>
+        <p>If you can see this, Vercel is successfully serving your files.</p>
+        <p>Current Time: <span id="time"></span></p>
+    </div>
+    <script>
+        document.getElementById('time').innerText = new Date().toLocaleTimeString();
+    </script>
+</body>
+</html>

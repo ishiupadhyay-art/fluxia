@@ -1,5 +1,5 @@
-'use client';
 import { useAuth } from '@/lib/auth';
+import { isSupabaseConfigured } from '@/lib/supabase';
 import { ArrowLeft, LogOut, Mail, Calendar, Shield, ChevronRight } from 'lucide-react';
 
 interface ProfilePageProps {
@@ -94,6 +94,20 @@ export default function ProfilePage({ onBack }: ProfilePageProps) {
           <div className="bg-white/[0.03] rounded-2xl p-4 text-center border border-white/5">
             <p className="text-2xl font-bold text-emerald-400">{'$'}247</p>
             <p className="text-[10px] text-slate-500 mt-1">Saved</p>
+          </div>
+        </div>
+
+        {/* System Status */}
+        <div className="bg-white/[0.02] rounded-2xl p-4 border border-white/5">
+          <p className="text-[10px] text-slate-600 font-medium uppercase tracking-wider mb-2 px-1">System Health</p>
+          <div className="flex items-center justify-between px-1">
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${isSupabaseConfigured ? 'bg-emerald-400' : 'bg-rose-400'} animate-pulse`} />
+              <span className="text-xs text-slate-400">Supabase Connection</span>
+            </div>
+            <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${isSupabaseConfigured ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
+              {isSupabaseConfigured ? 'CONNECTED' : 'NOT CONFIGURED'}
+            </span>
           </div>
         </div>
 
