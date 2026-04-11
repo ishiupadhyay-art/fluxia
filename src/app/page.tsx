@@ -8,7 +8,9 @@ import ProfilePage from '@/components/ProfilePage';
 import RadarHome from '@/components/RadarHome';
 import CategoryFeed from '@/components/CategoryFeed';
 import PauseModal from '@/components/PauseModal';
+import { supabase } from '@/lib/supabase';
 import { Radar, LayoutGrid, User } from 'lucide-react';
+import { useEffect } from 'react';
 
 type Screen = 'home' | 'feed' | 'profile';
 
@@ -20,6 +22,40 @@ export default function Home() {
   const [pauseTarget, setPauseTarget] = useState<Subscription | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Fetch real data from Supabase if user is logged in (and not a guest)
+  useEffect(() => {
+    if (user && user.id !== 'guest') {
+      const fetchSubs = async () => {
+        const { data, error } = await supabase
+          .from('subscriptions')
+          .select('*')
+          .eq('user_id', user.id);
+
+        if (!error && data && data.length > 0) {
+          // Map DB columns to frontend Subscription interface
+          const formattedSubs: Subscription[] = data.map(dbSub => ({
+            id: dbSub.id,
+            name: dbSub.name,
+            icon: dbSub.icon,
+            category: dbSub.category,
+            monthlyPrice: Number(dbSub.monthly_price),
+            nextBillingDate: dbSub.next_billing_date,
+            daysUntilBilling: Math.max(0, Math.ceil((new Date(dbSub.next_billing_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))),
+            status: dbSub.status,
+            lastUsedDaysAgo: dbSub.last_used_days_ago,
+            valueScore: dbSub.value_score
+          }));
+          setSubs(formattedSubs);
+        }
+      };
+
+      fetchSubs();
+    } else {
+      // Revert to mock data for guest or logged out
+      setSubs(initialSubscriptions);
+    }
+  }, [user]);
+
   const handleSplashComplete = useCallback(() => {
     setShowSplash(false);
   }, []);
@@ -29,10 +65,19 @@ export default function Home() {
     setIsModalOpen(true);
   };
 
-  const handleConfirmPause = (subId: string) => {
+  const handleConfirmPause = async (subId: string) => {
+    // Optimistic update locally
     setSubs(prev =>
       prev.map(s => (s.id === subId ? { ...s, status: 'paused' as const } : s))
     );
+
+    // Persist to Supabase if not guest
+    if (user && user.id !== 'guest') {
+      await supabase
+        .from('subscriptions')
+        .update({ status: 'paused' })
+        .eq('id', subId);
+    }
   };
 
   // Show splash screen first

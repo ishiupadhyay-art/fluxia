@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 -- 2. Subscriptions Table
 CREATE TABLE IF NOT EXISTS public.subscriptions (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID REFERENCES auth.users ON DELETE CASCADE NOT KEY,
+    user_id UUID REFERENCES auth.users ON DELETE CASCADE NOT NULL,
     name TEXT NOT NULL,
     icon TEXT,
     category TEXT,
