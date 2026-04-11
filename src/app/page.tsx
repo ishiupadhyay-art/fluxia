@@ -62,11 +62,6 @@ export default function Home() {
     return <AuthScreen />;
   }
 
-  // Show profile page
-  if (screen === 'profile') {
-    return <ProfilePage onBack={() => setScreen('home')} />;
-  }
-
   // Main app
   return (
     <div className="flex flex-col min-h-screen max-w-lg mx-auto relative">
@@ -104,12 +99,14 @@ export default function Home() {
             subscriptions={subs}
             onViewAll={() => setScreen('feed')}
           />
-        ) : (
+        ) : screen === 'feed' ? (
           <CategoryFeed
             subscriptions={subs}
             onPause={handlePause}
             onBack={() => setScreen('home')}
           />
+        ) : (
+          <ProfilePage onBack={() => setScreen('home')} />
         )}
       </main>
 
