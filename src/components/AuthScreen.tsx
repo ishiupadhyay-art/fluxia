@@ -6,16 +6,46 @@ import { Mail } from 'lucide-react';
 type AuthMode = 'welcome' | 'login' | 'signup';
 
 export default function AuthScreen() {
-  const { signInWithGoogle, signInAsGuest } = useAuth();
+  const { signInWithGoogle, signInWithEmail, signUpWithEmail, signInAsGuest } = useAuth();
   const [mode, setMode] = useState<AuthMode>('welcome');
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleGoogleAuth = async () => {
     setIsLoading(true);
+    setErrorMsg('');
     try {
       await signInWithGoogle();
-    } catch (error) {
+    } catch (error: any) {
+      setErrorMsg(error.message || 'Failed to authenticate with Google');
       console.error('Auth error:', error);
+      setIsLoading(false);
+    }
+  };
+
+  const handleEmailAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setErrorMsg('Please enter both email and password');
+      return;
+    }
+    
+    setIsLoading(true);
+    setErrorMsg('');
+    try {
+      if (mode === 'login') {
+        await signInWithEmail(email, password);
+      } else {
+        await signUpWithEmail(email, password);
+        // Supabase often requires email confirmation. If error doesn't throw, but user is null...
+        alert('Signup successful! Check your email to confirm, or try logging in if auto-confirm is enabled.');
+      }
+    } catch (error: any) {
+      setErrorMsg(error.message || `Failed to ${mode}`);
+      console.error('Email Auth error:', error);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -151,24 +181,45 @@ export default function AuthScreen() {
           Continue as Guest
         </button>
 
-        {/* Email placeholder (future implementation) */}
-        <div className="flex flex-col gap-3">
+        {/* Error Message */}
+        {errorMsg && (
+          <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs p-3 rounded-xl mb-4 text-center">
+            {errorMsg}
+          </div>
+        )}
+
+        {/* Email Form */}
+        <form onSubmit={handleEmailAuth} className="flex flex-col gap-3">
           <div className="relative">
             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="you@email.com"
-              disabled
-              className="w-full py-3.5 pl-11 pr-4 rounded-xl bg-white/5 border border-white/10 text-sm text-slate-400 placeholder:text-slate-600 outline-none disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full py-3.5 pl-11 pr-4 rounded-xl bg-white/5 border border-white/10 text-sm text-slate-300 placeholder:text-slate-600 outline-none focus:border-amber-400/50 transition-colors"
+            />
+          </div>
+          <div className="relative">
+            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full py-3.5 pl-11 pr-4 rounded-xl bg-white/5 border border-white/10 text-sm text-slate-300 placeholder:text-slate-600 outline-none focus:border-amber-400/50 transition-colors"
             />
           </div>
           <button
-            disabled
-            className="w-full py-3.5 rounded-xl bg-white/5 text-slate-600 text-sm font-medium border border-white/5 cursor-not-allowed"
+            type="submit"
+            disabled={isLoading}
+            className="w-full py-3.5 rounded-xl bg-amber-500/10 text-amber-400 text-sm font-medium border border-amber-500/20 hover:bg-amber-500/20 transition-colors mt-2"
           >
-            Email login coming soon
+            {isLoading ? 'Processing...' : isLogin ? 'Log In with Email' : 'Sign Up with Email'}
           </button>
-        </div>
+        </form>
 
         {/* Toggle */}
         <p className="text-center text-sm text-slate-600 mt-8">

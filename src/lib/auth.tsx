@@ -8,6 +8,8 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (e: string, p: string) => Promise<void>;
+  signUpWithEmail: (e: string, p: string) => Promise<void>;
   signInAsGuest: () => void;
   signOut: () => Promise<void>;
 }
@@ -17,6 +19,8 @@ const AuthContext = createContext<AuthContextType>({
   session: null,
   loading: true,
   signInWithGoogle: async () => {},
+  signInWithEmail: async () => {},
+  signUpWithEmail: async () => {},
   signInAsGuest: () => {},
   signOut: async () => {},
 });
@@ -57,6 +61,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const signInWithEmail = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+  };
+
+  const signUpWithEmail = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signUp({ 
+      email, 
+      password,
+      // By default this needs email confirmation, but we will assume it might be disabled
+      // or the user will confirm it. We also supply a fake full name if they sign up this way.
+      options: {
+        data: {
+          full_name: email.split('@')[0]
+        }
+      }
+    });
+    if (error) throw error;
+  };
+
   const signInAsGuest = () => {
     setUser({
       id: 'guest',
@@ -77,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signInWithGoogle, signInAsGuest, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, signInAsGuest, signOut }}>
       {children}
     </AuthContext.Provider>
   );
