@@ -35,3 +35,67 @@ export const categoryIcons: Record<string, string> = {
   'Ghost Debt': '👻',
   'Tech Tools & AI': '⚡',
 };
+
+// --- CARD HUB MOCK DATA ---
+export interface CreditCard {
+  id: string;
+  name: string;
+  network: 'Visa' | 'Mastercard' | 'Amex' | 'Discover';
+  balance: number;
+  creditLimit: number;
+  dueDate: string;
+  colorGrad: string; // Tailwind gradient classes
+  digits: string;
+}
+
+export const mockCards: CreditCard[] = [
+  {
+    id: 'c1',
+    name: 'Chase Sapphire Reserve',
+    network: 'Visa',
+    balance: 1450.50,
+    creditLimit: 25000,
+    dueDate: '2026-04-20',
+    colorGrad: 'from-blue-900 to-slate-900',
+    digits: '4123'
+  },
+  {
+    id: 'c2',
+    name: 'Amex Gold',
+    network: 'Amex',
+    balance: 850.00,
+    creditLimit: 15000,
+    dueDate: '2026-04-18',
+    colorGrad: 'from-amber-600 to-amber-800',
+    digits: '1004'
+  },
+  {
+    id: 'c3',
+    name: 'Citi Custom Cash',
+    network: 'Mastercard',
+    balance: 4200.75,
+    creditLimit: 6000,
+    dueDate: '2026-04-25',
+    colorGrad: 'from-cyan-800 to-blue-700',
+    digits: '8991'
+  }
+];
+
+export interface CardExpense {
+  id: string;
+  cardId: string;
+  merchant: string;
+  amount: number;
+  date: string;
+  category: string;
+  icon: string;
+}
+
+export const mockCardExpenses: CardExpense[] = [
+  { id: 'e1', cardId: 'c2', merchant: 'Whole Foods', amount: 84.50, date: '2026-04-10', category: 'Groceries', icon: '🛒' },
+  { id: 'e2', cardId: 'c1', merchant: 'Delta Airlines', amount: 450.00, date: '2026-04-08', category: 'Travel', icon: '✈️' },
+  { id: 'e3', cardId: 'c2', merchant: 'Sweetgreen', amount: 18.90, date: '2026-04-11', category: 'Dining', icon: '🥗' },
+  { id: 'e4', cardId: 'c3', merchant: 'Shell Gas', amount: 45.00, date: '2026-04-09', category: 'Gas', icon: '⛽' },
+  { id: 'e5', cardId: 'c1', merchant: 'Airbnb', amount: 850.00, date: '2026-04-05', category: 'Travel', icon: '🏨' },
+];
+

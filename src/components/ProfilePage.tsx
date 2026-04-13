@@ -56,11 +56,39 @@ export default function ProfilePage({ onBack }: ProfilePageProps) {
       setTimeout(() => setImportSuccess(false), 3000);
     } catch (error) {
       console.error('Import failed:', error);
-      alert('Failed to import data. Check your Supabase tables.');
+      // alert('Failed to import data. Check your Supabase tables.');
     } finally {
       setIsImporting(false);
     }
   };
+
+  const isGuest = user?.id === 'guest';
+
+  if (isGuest) {
+    return (
+      <div className="flex flex-col min-h-screen max-w-lg mx-auto bg-[#0B1120] justify-center items-center px-6 text-center">
+        <div className="w-20 h-20 mb-6 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
+          <Shield className="w-10 h-10 text-amber-500" />
+        </div>
+        <h1 className="text-2xl font-bold text-white mb-3">Create an Account</h1>
+        <p className="text-slate-400 text-sm mb-8">
+          Sign in to access your profile, sync data across devices, and unlock full financial clarity.
+        </p>
+        <button
+          onClick={handleSignOut}
+          className="w-full max-w-xs py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-400 text-black font-semibold text-sm hover:from-amber-400 hover:to-amber-300 transition-all duration-300 shadow-lg shadow-amber-500/20"
+        >
+          Sign In Now
+        </button>
+        <button
+          onClick={onBack}
+          className="mt-4 text-slate-500 text-sm hover:text-slate-300 transition-colors"
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
 
   const menuItems = [
     { icon: Shield, label: 'Connected Accounts', value: 'Google', action: () => {} },
@@ -136,51 +164,7 @@ export default function ProfilePage({ onBack }: ProfilePageProps) {
           </div>
         </div>
 
-        {/* System Status */}
-        <div className="bg-white/[0.02] rounded-2xl p-4 border border-white/5 flex flex-col gap-4">
-          <div>
-            <p className="text-[10px] text-slate-600 font-medium uppercase tracking-wider mb-2 px-1">System Health</p>
-            <div className="flex items-center justify-between px-1">
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${isSupabaseConfigured ? 'bg-emerald-400' : 'bg-rose-400'} animate-pulse`} />
-                <span className="text-xs text-slate-400">Supabase Connection</span>
-              </div>
-              <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${isSupabaseConfigured ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
-                {isSupabaseConfigured ? 'CONNECTED' : 'NOT CONFIGURED'}
-              </span>
-            </div>
-          </div>
 
-          {isSupabaseConfigured && user && user.id !== 'guest' && (
-            <div className="pt-2 border-t border-white/5">
-              <button
-                onClick={handleImportDemoData}
-                disabled={isImporting || importSuccess}
-                className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl transition-all duration-300 ${
-                  importSuccess 
-                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
-                    : 'bg-amber-400/10 text-amber-400 border border-amber-400/20 hover:bg-amber-400/20'
-                }`}
-              >
-                {isImporting ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : importSuccess ? (
-                  <CheckCircle2 className="w-4 h-4" />
-                ) : (
-                  <Database className="w-4 h-4" />
-                )}
-                <span className="text-xs font-semibold">
-                  {isImporting ? 'Importing...' : importSuccess ? 'Demo Data Imported!' : 'Import Demo Data to Supabase'}
-                </span>
-              </button>
-              {!importSuccess && (
-                <p className="text-[10px] text-slate-600 text-center mt-2 px-2 italic">
-                  One-tap copy of the 12 mock subscriptions into your database.
-                </p>
-              )}
-            </div>
-          )}
-        </div>
 
         {/* Menu Items */}
         <div className="flex flex-col gap-1">
@@ -211,11 +195,6 @@ export default function ProfilePage({ onBack }: ProfilePageProps) {
           <LogOut className="w-4 h-4 text-rose-400" />
           <span className="text-sm font-medium text-rose-400">Sign Out</span>
         </button>
-
-        {/* Footer */}
-        <p className="text-center text-[10px] text-slate-700 pb-8">
-          Fluxia v0.1.0 — Financial Clarity Engine
-        </p>
       </div>
     </div>
   );

@@ -39,17 +39,12 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
         {/* Glowing orb behind logo */}
         <div className="relative">
           <div className="absolute inset-0 w-20 h-20 mx-auto bg-amber-400/20 rounded-full blur-2xl" />
-          <div className="relative w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-2xl shadow-amber-500/30">
+          <div className="relative w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-amber-300 to-amber-700 flex items-center justify-center shadow-2xl shadow-amber-500/30 border-4 border-amber-500/20">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M20 4C20 4 8 12 8 22C8 28.627 13.373 34 20 34C26.627 34 32 28.627 32 22C32 12 20 4 20 4Z"
-                fill="rgba(0,0,0,0.3)"
-              />
-              <path
-                d="M20 8C20 8 12 14 12 22C12 26.418 15.582 30 20 30C24.418 30 28 26.418 28 22C28 14 20 8 20 8Z"
-                fill="rgba(255,255,255,0.9)"
-              />
-              <circle cx="20" cy="21" r="4" fill="rgba(245,158,11,0.8)" />
+              <circle cx="20" cy="20" r="18" stroke="#B45309" strokeWidth="2" />
+              <circle cx="20" cy="20" r="14" stroke="#B45309" strokeWidth="1" strokeDasharray="2 2" />
+              <path d="M20 10v20M10 20h20" stroke="#B45309" strokeWidth="1" />
+              <circle cx="20" cy="20" r="6" fill="#F59E0B" stroke="#78350F" strokeWidth="1" />
             </svg>
           </div>
         </div>

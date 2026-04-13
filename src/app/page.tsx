@@ -8,11 +8,12 @@ import ProfilePage from '@/components/ProfilePage';
 import RadarHome from '@/components/RadarHome';
 import CategoryFeed from '@/components/CategoryFeed';
 import PauseModal from '@/components/PauseModal';
+import CardsHome from '@/components/CardsHome';
 import { supabase } from '@/lib/supabase';
-import { Radar, LayoutGrid, User } from 'lucide-react';
+import { Radar, LayoutGrid, User, CreditCard } from 'lucide-react';
 import { useEffect } from 'react';
 
-type Screen = 'home' | 'feed' | 'profile';
+type Screen = 'home' | 'feed' | 'profile' | 'cards';
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -150,6 +151,8 @@ export default function Home() {
             onPause={handlePause}
             onBack={() => setScreen('home')}
           />
+        ) : screen === 'cards' ? (
+          <CardsHome />
         ) : (
           <ProfilePage onBack={() => setScreen('home')} />
         )}
@@ -171,6 +174,13 @@ export default function Home() {
           >
             <LayoutGrid className="w-5 h-5" />
             <span className="text-[10px] font-medium">Subscriptions</span>
+          </button>
+          <button
+            onClick={() => setScreen('cards')}
+            className={`flex flex-col items-center gap-1 transition-colors ${screen === 'cards' ? 'text-amber-400' : 'text-slate-600'}`}
+          >
+            <CreditCard className="w-5 h-5" />
+            <span className="text-[10px] font-medium">Cards</span>
           </button>
           <button
             onClick={() => setScreen('profile')}
