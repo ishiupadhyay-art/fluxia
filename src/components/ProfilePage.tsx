@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { subscriptions as mockSubscriptions } from '@/lib/mockData';
-import { ArrowLeft, LogOut, Mail, Calendar, Shield, ChevronRight, Database, CheckCircle2, Loader2 } from 'lucide-react';
+import { ArrowLeft, LogOut, Mail, Calendar, Shield, ChevronRight, CheckCircle2, Loader2, Globe } from 'lucide-react';
+import { useCurrency } from '@/lib/currencyContext';
 
 interface ProfilePageProps {
   onBack: () => void;
@@ -10,6 +11,7 @@ interface ProfilePageProps {
 
 export default function ProfilePage({ onBack }: ProfilePageProps) {
   const { user, signOut } = useAuth();
+  const { currency, setCurrency } = useCurrency();
 
   const avatarUrl = user?.user_metadata?.avatar_url;
   const fullName = user?.user_metadata?.full_name || 'Fluxia User';
@@ -91,9 +93,17 @@ export default function ProfilePage({ onBack }: ProfilePageProps) {
   }
 
   const menuItems = [
-    { icon: Shield, label: 'Connected Accounts', value: 'Google', action: () => {} },
-    { icon: Mail, label: 'Notifications', value: 'On', action: () => {} },
-    { icon: Calendar, label: 'Billing Cycle', value: 'Monthly', action: () => {} },
+    { icon: Shield, label: 'Connected Accounts', value: 'Google', action: () => {}, isSelect: false },
+    { icon: Mail, label: 'Notifications', value: 'On', action: () => {}, isSelect: false },
+    { icon: Calendar, label: 'Billing Cycle', value: 'Monthly', action: () => {}, isSelect: false },
+    { 
+      icon: Globe, 
+      label: 'Currency', 
+      value: currency, 
+      action: () => {}, 
+      isSelect: true,
+      options: ['USD', 'AUD', 'SGD', 'MYR', 'GBP', 'EUR', 'INR']
+    },
   ];
 
   return (
@@ -170,20 +180,33 @@ export default function ProfilePage({ onBack }: ProfilePageProps) {
         <div className="flex flex-col gap-1">
           <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mb-2 px-1">Settings</p>
           {menuItems.map((item) => (
-            <button
+            <div
               key={item.label}
-              onClick={item.action}
-              className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-all duration-200 group"
+              onClick={item.isSelect ? undefined : item.action}
+              className={`flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] border border-white/5 transition-all duration-200 group ${!item.isSelect && 'cursor-pointer hover:bg-white/[0.06]'}`}
             >
               <div className="flex items-center gap-3">
                 <item.icon className="w-4 h-4 text-slate-500" />
                 <span className="text-sm text-slate-300">{item.label}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-600">{item.value}</span>
-                <ChevronRight className="w-4 h-4 text-slate-700 group-hover:text-slate-500 transition-colors" />
+                {item.isSelect ? (
+                  <select 
+                    value={currency} 
+                    onChange={(e) => setCurrency(e.target.value as any)}
+                    className="bg-[#0B1120] text-xs text-white border border-white/10 rounded-lg px-2 py-1 focus:outline-none focus:border-amber-500/50 appearance-none text-right pr-6"
+                    style={{ backgroundImage: `url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right .5rem top 50%', backgroundSize: '.65rem auto' }}
+                  >
+                    {item.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                  </select>
+                ) : (
+                  <>
+                    <span className="text-xs text-slate-600">{item.value}</span>
+                    <ChevronRight className="w-4 h-4 text-slate-700 group-hover:text-slate-500 transition-colors" />
+                  </>
+                )}
               </div>
-            </button>
+            </div>
           ))}
         </div>
 

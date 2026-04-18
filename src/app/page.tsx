@@ -1,19 +1,20 @@
 'use client';
 import { useState, useCallback } from 'react';
 import { useAuth } from '@/lib/auth';
-import { subscriptions as initialSubscriptions, Subscription } from '@/lib/mockData';
+import { subscriptions as initialSubscriptions, Subscription, mockCards } from '@/lib/mockData';
 import SplashScreen from '@/components/SplashScreen';
 import AuthScreen from '@/components/AuthScreen';
 import ProfilePage from '@/components/ProfilePage';
 import RadarHome from '@/components/RadarHome';
 import CategoryFeed from '@/components/CategoryFeed';
 import PauseModal from '@/components/PauseModal';
-import CardsHome from '@/components/CardsHome';
+import BudgetPage from '@/components/BudgetPage';
 import { supabase } from '@/lib/supabase';
-import { Radar, LayoutGrid, User, CreditCard } from 'lucide-react';
+import { Radar, LayoutGrid, User, PiggyBank } from 'lucide-react';
 import { useEffect } from 'react';
+import { CurrencyProvider } from '@/lib/currencyContext';
 
-type Screen = 'home' | 'feed' | 'profile' | 'cards';
+type Screen = 'home' | 'feed' | 'profile' | 'budget';
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -110,7 +111,8 @@ export default function Home() {
 
   // Main app
   return (
-    <div className="flex flex-col min-h-screen max-w-lg mx-auto relative">
+    <CurrencyProvider>
+      <div className="flex flex-col min-h-screen max-w-lg mx-auto relative">
       {/* Status Bar Spacer */}
       <div className="h-12 flex-shrink-0" />
 
@@ -143,7 +145,9 @@ export default function Home() {
         {screen === 'home' ? (
           <RadarHome
             subscriptions={subs}
+            cards={mockCards}
             onViewAll={() => setScreen('feed')}
+            onViewCards={() => setScreen('budget')}
           />
         ) : screen === 'feed' ? (
           <CategoryFeed
@@ -151,8 +155,8 @@ export default function Home() {
             onPause={handlePause}
             onBack={() => setScreen('home')}
           />
-        ) : screen === 'cards' ? (
-          <CardsHome />
+        ) : screen === 'budget' ? (
+          <BudgetPage />
         ) : (
           <ProfilePage onBack={() => setScreen('home')} />
         )}
@@ -176,11 +180,11 @@ export default function Home() {
             <span className="text-[10px] font-medium">Subscriptions</span>
           </button>
           <button
-            onClick={() => setScreen('cards')}
-            className={`flex flex-col items-center gap-1 transition-colors ${screen === 'cards' ? 'text-amber-400' : 'text-slate-600'}`}
+            onClick={() => setScreen('budget')}
+            className={`flex flex-col items-center gap-1 transition-colors ${screen === 'budget' ? 'text-amber-400' : 'text-slate-600'}`}
           >
-            <CreditCard className="w-5 h-5" />
-            <span className="text-[10px] font-medium">Cards</span>
+            <PiggyBank className="w-5 h-5" />
+            <span className="text-[10px] font-medium">Budget</span>
           </button>
           <button
             onClick={() => setScreen('profile')}
@@ -192,7 +196,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Pause Modal */}
       <PauseModal
         subscription={pauseTarget}
         isOpen={isModalOpen}
@@ -200,5 +203,6 @@ export default function Home() {
         onConfirmPause={handleConfirmPause}
       />
     </div>
+    </CurrencyProvider>
   );
 }

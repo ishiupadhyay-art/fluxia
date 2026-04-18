@@ -94,8 +94,14 @@ export interface CardExpense {
 export const mockCardExpenses: CardExpense[] = [
   { id: 'e1', cardId: 'c2', merchant: 'Whole Foods', amount: 84.50, date: '2026-04-10', category: 'Groceries', icon: '🛒' },
   { id: 'e2', cardId: 'c1', merchant: 'Delta Airlines', amount: 450.00, date: '2026-04-08', category: 'Travel', icon: '✈️' },
-  { id: 'e3', cardId: 'c2', merchant: 'Sweetgreen', amount: 18.90, date: '2026-04-11', category: 'Dining', icon: '🥗' },
-  { id: 'e4', cardId: 'c3', merchant: 'Shell Gas', amount: 45.00, date: '2026-04-09', category: 'Gas', icon: '⛽' },
-  { id: 'e5', cardId: 'c1', merchant: 'Airbnb', amount: 850.00, date: '2026-04-05', category: 'Travel', icon: '🏨' },
+  { id: 'e3', cardId: 'c2', merchant: 'Sweetgreen', amount: 18.90, date: '2026-04-11', category: 'Food & Dining', icon: '🥗' },
+  { id: 'e4', cardId: 'c3', merchant: 'Shell Gas', amount: 45.00, date: '2026-04-09', category: 'Transport', icon: '⛽' },
+  { id: 'e5', cardId: 'c1', merchant: 'Airbnb', amount: 350.00, date: '2026-04-05', category: 'Travel', icon: '🏨' },
+  { id: 'e6', cardId: 'c3', merchant: 'College Bookstore', amount: 120.00, date: '2026-04-12', category: 'Education', icon: '📚' },
+  { id: 'e7', cardId: 'c2', merchant: 'Uber', amount: 24.50, date: '2026-04-14', category: 'Transport', icon: '🚕' },
+  { id: 'e8', cardId: 'c1', merchant: 'Campus Coffee', amount: 6.50, date: '2026-04-15', category: 'Food & Dining', icon: '☕' },
+  { id: 'e9', cardId: 'c3', merchant: 'Movie Theater', amount: 22.00, date: '2026-04-16', category: 'Entertainment', icon: '🎬' },
+  // This ATM withdrawal should be filtered out by the budget engine!
+  { id: 'e10', cardId: 'c2', merchant: 'Campus ATM Withdrawal', amount: 100.00, date: '2026-04-15', category: 'ATM', icon: '💵' },
 ];
 
